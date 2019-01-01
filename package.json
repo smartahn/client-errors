@@ -1,0 +1,23 @@
+{
+  "name": "client-errors",
+  "description": "Client error class for Node servers",
+  "version": "0.8.0",
+  "author": "Junmin Ahn <app.smartahn@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "client-errors"
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/smartahn/client-errors.git"
+  },
+  "files": [
+    "LICENSE",
+    "HISTORY.md",
+    "index.js"
+  ],
+  "engines": {
+    "node": ">= 6.0.0"
+  }
+}
