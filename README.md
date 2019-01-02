@@ -10,7 +10,7 @@ $ npm install client-errors
 
 ## Example
 
-### Baic Usage
+### Basic Usage
 
 ```js
 const { UnauthorizedError } = require('client-errors');

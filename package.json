@@ -1,7 +1,7 @@
 {
   "name": "client-errors",
   "description": "Client error class for Node servers",
-  "version": "0.8.1",
+  "version": "0.8.3",
   "author": "Junmin Ahn <app.smartahn@gmail.com>",
   "license": "MIT",
   "keywords": [
