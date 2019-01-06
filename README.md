@@ -13,10 +13,15 @@ $ npm install client-errors
 ### Basic Usage
 
 ```js
-const { UnauthorizedError } = require('client-errors');
+const { ClientError, UnauthorizedError } = require('client-errors');
 
+// Use of a derived class
 throw new UnauthorizedError(); // default message: 'The user is not authorized'
 throw new UnauthorizedError('you are a bad guy!'); // custom message: 'you are a bad guy'
+
+// Use of a error code
+throw new ClientError(401); // default message: 'The user is not authorized'
+throw new ClientError(401, 'you are a bad guy!'); // custom message: 'you are a bad guy'
 
 ```
 
@@ -25,7 +30,7 @@ throw new UnauthorizedError('you are a bad guy!'); // custom message: 'you are a
 ```js
 const express = require('express');
 const router = express.Router();
-const { UnauthorizedError, BadRequestError } = require('client-errors');
+const { ClientError, UnauthorizedError, BadRequestError } = require('client-errors');
 const mongoose = require('mongoose');
 
 router.put('/items/:id', updateItem);
@@ -34,8 +39,11 @@ function updateItem(req, res) {
     mongoose.model('Item').findById(req.params.id).then(item => {
         if (!item) throw new BadRequestError('item does not exist');
         if (item.ownedBy !== req.user.id) throw new UnauthorizedError('invalid access to this item');
-
-        item.set(res.body);
+        
+        const data = req.body;
+        if (data.ownedBy !== req.user.id) throw new ClientError(403, 'cannot update owners of items');
+        
+        item.set(data);
         item.save().then(res.json);
 
     }).catch(err => {

@@ -6,14 +6,16 @@
 
 'use strict'
 
+const messages = require('./messages');
+
 /**
  * ES6 Custom Error Class
  * @ref https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
  */
 class ClientError extends Error {
-  constructor(statusCode = 400, ...params) {
+  constructor(statusCode = 400, message, ...others) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor
-    super(...params);
+    super(message || messages[statusCode] || messages[400], ...others);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
@@ -26,13 +28,15 @@ class ClientError extends Error {
   }
 }
 
+exports.ClientError = ClientError;
+
 /**
  * The server cannot or will not process the request due to something that is perceived to be a client error
  * (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).
  * courtesy of https://httpstatuses.com/400
  */
 exports.BadRequestError = class BadRequestError extends ClientError {
-  constructor(message = 'The server cannot process the request due to a client error', ...others) {
+  constructor(message, ...others) {
     super(400, message, ...others);
   }
 }
@@ -42,7 +46,7 @@ exports.BadRequestError = class BadRequestError extends ClientError {
  * courtesy of https://httpstatuses.com/401
  */
 exports.UnauthorizedError = class UnauthorizedError extends ClientError {
-  constructor(message = 'The user is not authorized', ...others) {
+  constructor(message, ...others) {
     super(401, message, ...others);
   }
 }
@@ -52,7 +56,7 @@ exports.UnauthorizedError = class UnauthorizedError extends ClientError {
  * courtesy of https://httpstatuses.com/403
  */
 exports.ForbiddenError = class ForbiddenError extends ClientError {
-  constructor(message = 'The server refused to authorize the request', ...others) {
+  constructor(message, ...others) {
     super(403, message, ...others);
   }
 }
@@ -62,7 +66,7 @@ exports.ForbiddenError = class ForbiddenError extends ClientError {
  * courtesy of https://httpstatuses.com/404
  */
 exports.NotFoundError = class NotFoundError extends ClientError {
-  constructor(message = 'The server did not find a current representation for the target resource', ...others) {
+  constructor(message, ...others) {
     super(404, message, ...others);
   }
 }
@@ -72,7 +76,7 @@ exports.NotFoundError = class NotFoundError extends ClientError {
  * courtesy of https://httpstatuses.com/405
  */
 exports.MethodNotAllowedError = class MethodNotAllowedError extends ClientError {
-  constructor(message = 'The method received is not allowed', ...others) {
+  constructor(message, ...others) {
     super(405, message, ...others);
   }
 }
@@ -84,7 +88,7 @@ exports.MethodNotAllowedError = class MethodNotAllowedError extends ClientError 
  * courtesy of https://httpstatuses.com/406
  */
 exports.NotAcceptableError = class NotAcceptableError extends ClientError {
-  constructor(message = 'The request is not acceptable to the user agent', ...others) {
+  constructor(message, ...others) {
     super(406, message, ...others);
   }
 }
@@ -94,7 +98,7 @@ exports.NotAcceptableError = class NotAcceptableError extends ClientError {
  * courtesy of https://httpstatuses.com/407
  */
 exports.ProxyAuthRequiredError = class ProxyAuthRequiredError extends ClientError {
-  constructor(message = 'The client needs to authenticate itself in order to use a proxy', ...others) {
+  constructor(message, ...others) {
     super(407, message, ...others);
   }
 }
@@ -104,7 +108,7 @@ exports.ProxyAuthRequiredError = class ProxyAuthRequiredError extends ClientErro
  * courtesy of https://httpstatuses.com/408
  */
 exports.RequestTimeoutError = class RequestTimeoutError extends ClientError {
-  constructor(message = 'The request was not completed in the expected time', ...others) {
+  constructor(message, ...others) {
     super(408, message, ...others);
   }
 }
@@ -115,7 +119,7 @@ exports.RequestTimeoutError = class RequestTimeoutError extends ClientError {
  * courtesy of https://httpstatuses.com/409
  */
 exports.ConflictError = class ConflictError extends ClientError {
-  constructor(message = 'The request was not completed due to a conflict with the target resource', ...others) {
+  constructor(message, ...others) {
     super(409, message, ...others);
   }
 }
@@ -125,7 +129,7 @@ exports.ConflictError = class ConflictError extends ClientError {
  * courtesy of https://httpstatuses.com/410
  */
 exports.GoneError = class GoneError extends ClientError {
-  constructor(message = 'The target resource is no longer available at the origin server', ...others) {
+  constructor(message, ...others) {
     super(410, message, ...others);
   }
 }
@@ -135,7 +139,7 @@ exports.GoneError = class GoneError extends ClientError {
  * courtesy of https://httpstatuses.com/411
  */
 exports.LengthRequiredError = class LengthRequiredError extends ClientError {
-  constructor(message = 'The server refuses to accept the request without a defined Content-Length', ...others) {
+  constructor(message, ...others) {
     super(411, message, ...others);
   }
 }
@@ -145,7 +149,7 @@ exports.LengthRequiredError = class LengthRequiredError extends ClientError {
  * courtesy of https://httpstatuses.com/412
  */
 exports.PreconditionFailedError = class PreconditionFailedError extends ClientError {
-  constructor(message = 'One or more conditions given in the request header fields evaluated to false', ...others) {
+  constructor(message, ...others) {
     super(412, message, ...others);
   }
 }
@@ -155,7 +159,7 @@ exports.PreconditionFailedError = class PreconditionFailedError extends ClientEr
  * courtesy of https://httpstatuses.com/413
  */
 exports.PayloadTooLargeError = class PayloadTooLargeError extends ClientError {
-  constructor(message = 'The request payload is too large', ...others) {
+  constructor(message, ...others) {
     super(413, message, ...others);
   }
 }
@@ -165,7 +169,7 @@ exports.PayloadTooLargeError = class PayloadTooLargeError extends ClientError {
  * courtesy of https://httpstatuses.com/414
  */
 exports.UriTooLongError = class UriTooLongError extends ClientError {
-  constructor(message = 'The request target is too longer', ...others) {
+  constructor(message, ...others) {
     super(414, message, ...others);
   }
 }
@@ -175,7 +179,7 @@ exports.UriTooLongError = class UriTooLongError extends ClientError {
  * courtesy of https://httpstatuses.com/415
  */
 exports.UnsupportedMediaTypeError = class UnsupportedMediaTypeError extends ClientError {
-  constructor(message = 'The payload is in a format not supported', ...others) {
+  constructor(message, ...others) {
     super(415, message, ...others);
   }
 }
@@ -186,7 +190,7 @@ exports.UnsupportedMediaTypeError = class UnsupportedMediaTypeError extends Clie
  * courtesy of https://httpstatuses.com/416
  */
 exports.RequestedRangeNotSatisfiableError = class RequestedRangeNotSatisfiableError extends ClientError {
-  constructor(message = 'None of the ranges in the request\'s Range header field overlap the current extent of the selected resource', ...others) {
+  constructor(message, ...others) {
     super(416, message, ...others);
   }
 }
@@ -196,7 +200,7 @@ exports.RequestedRangeNotSatisfiableError = class RequestedRangeNotSatisfiableEr
  * courtesy of https://httpstatuses.com/417
  */
 exports.ExpectationFailedError = class ExpectationFailedError extends ClientError {
-  constructor(message = 'The expectation given in the request\'s Expect header field could not be met', ...others) {
+  constructor(message, ...others) {
     super(417, message, ...others);
   }
 }
@@ -207,7 +211,7 @@ exports.ExpectationFailedError = class ExpectationFailedError extends ClientErro
  * courtesy of https://httpstatuses.com/418
  */
 exports.TeapotError = class TeapotError extends ClientError {
-  constructor(message = 'I\'m a teapot', ...others) {
+  constructor(message, ...others) {
     super(418, message, ...others);
   }
 }
@@ -219,7 +223,7 @@ exports.TeapotError = class TeapotError extends ClientError {
  * courtesy of https://httpstatuses.com/421
  */
 exports.MisdirectedRequestError = class MisdirectedRequestError extends ClientError {
-  constructor(message = 'The request was directed at a server that is not able to produce a response', ...others) {
+  constructor(message, ...others) {
     super(421, message, ...others);
   }
 }
@@ -230,7 +234,7 @@ exports.MisdirectedRequestError = class MisdirectedRequestError extends ClientEr
  * courtesy of https://httpstatuses.com/422
  */
 exports.UnprocessableEntityError = class UnprocessableEntityError extends ClientError {
-  constructor(message = 'The server is unable to process the request', ...others) {
+  constructor(message, ...others) {
     super(422, message, ...others);
   }
 }
@@ -240,7 +244,7 @@ exports.UnprocessableEntityError = class UnprocessableEntityError extends Client
  * courtesy of https://httpstatuses.com/423
  */
 exports.LockedError = class LockedError extends ClientError {
-  constructor(message = 'The source or destination resource of a method is locked', ...others) {
+  constructor(message, ...others) {
     super(423, message, ...others);
   }
 }
@@ -250,7 +254,7 @@ exports.LockedError = class LockedError extends ClientError {
  * courtesy of https://httpstatuses.com/424
  */
 exports.FailedDependencyError = class FailedDependencyError extends ClientError {
-  constructor(message = 'The requested action depended on another action', ...others) {
+  constructor(message, ...others) {
     super(424, message, ...others);
   }
 }
@@ -260,7 +264,7 @@ exports.FailedDependencyError = class FailedDependencyError extends ClientError 
  * courtesy of https://httpstatuses.com/426
  */
 exports.UpgradeRequiredError = class UpgradeRequiredError extends ClientError {
-  constructor(message = 'This service requires use of a different protocol', ...others) {
+  constructor(message, ...others) {
     super(426, message, ...others);
   }
 }
@@ -270,7 +274,7 @@ exports.UpgradeRequiredError = class UpgradeRequiredError extends ClientError {
  * courtesy of https://httpstatuses.com/428
  */
 exports.PreconditionRequiredError = class PreconditionRequiredError extends ClientError {
-  constructor(message = 'This request is required to be conditional', ...others) {
+  constructor(message, ...others) {
     super(428, message, ...others);
   }
 }
@@ -280,7 +284,7 @@ exports.PreconditionRequiredError = class PreconditionRequiredError extends Clie
  * courtesy of https://httpstatuses.com/429
  */
 exports.TooManyRequestsError = class TooManyRequestsError extends ClientError {
-  constructor(message = 'The user has sent too many requests in a given amount of time', ...others) {
+  constructor(message, ...others) {
     super(429, message, ...others);
   }
 }
@@ -291,7 +295,7 @@ exports.TooManyRequestsError = class TooManyRequestsError extends ClientError {
  * courtesy of https://httpstatuses.com/431
  */
 exports.RequestHeaderFieldsTooLargeError = class RequestHeaderFieldsTooLargeError extends ClientError {
-  constructor(message = 'Request header fields too large', ...others) {
+  constructor(message, ...others) {
     super(431, message, ...others);
   }
 }
@@ -301,7 +305,7 @@ exports.RequestHeaderFieldsTooLargeError = class RequestHeaderFieldsTooLargeErro
  * courtesy of https://httpstatuses.com/451
  */
 exports.UnavailableForLegalReasonsError = class UnavailableForLegalReasonsError extends ClientError {
-  constructor(message = 'Denied access due to a consequence of a legal demand', ...others) {
+  constructor(message, ...others) {
     super(451, message, ...others);
   }
 }
