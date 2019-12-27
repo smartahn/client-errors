@@ -13,3 +13,8 @@
 ==================
 
   * Added the base class to use error codes explicitly
+
+0.9.1 / 2019-01-12
+==================
+
+  * Fixed a dependency bug
